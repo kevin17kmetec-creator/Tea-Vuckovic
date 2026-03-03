@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface NavbarProps {
@@ -54,38 +54,38 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
           ))}
           
           {/* Language Switcher */}
-          <div className="flex items-center gap-2 border-l border-white/20 pl-6 ml-2">
-            <Globe size={14} className="text-gray-500" />
+          <div className="flex items-center gap-3 border-l border-white/20 pl-6 ml-2">
             <button 
               onClick={() => setLang('sl')}
-              className={`text-[10px] font-bold uppercase tracking-tighter transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-500 hover:text-white'}`}
+              className={`text-xs font-black uppercase tracking-widest transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-400 hover:text-white'}`}
             >
-              SL
+              SLO
             </button>
-            <span className="text-gray-700 text-[10px]">/</span>
+            <span className="text-gray-700 text-xs">/</span>
             <button 
               onClick={() => setLang('en')}
-              className={`text-[10px] font-bold uppercase tracking-tighter transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-500 hover:text-white'}`}
+              className={`text-xs font-black uppercase tracking-widest transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-400 hover:text-white'}`}
             >
-              EN
+              ENG
             </button>
           </div>
         </div>
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-4 md:hidden">
-          <div className="flex items-center gap-2 mr-2">
+          <div className="flex items-center gap-3 mr-2">
             <button 
               onClick={() => setLang('sl')}
-              className={`text-[10px] font-bold uppercase transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-500'}`}
+              className={`text-xs font-black uppercase transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-400'}`}
             >
-              SL
+              SLO
             </button>
+            <span className="text-gray-700 text-xs">/</span>
             <button 
               onClick={() => setLang('en')}
-              className={`text-[10px] font-bold uppercase transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-500'}`}
+              className={`text-xs font-black uppercase transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-400'}`}
             >
-              EN
+              ENG
             </button>
           </div>
           <button

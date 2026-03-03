@@ -1,32 +1,45 @@
 import { motion } from 'motion/react';
+import { Play, Pause } from 'lucide-react';
+import ReactPlayer from 'react-player';
 import { Language, translations } from '../translations';
+import { Track } from './GlobalPlayer';
+
+const Player = ReactPlayer as any;
 
 interface MusicProps {
   lang: Language;
+  onPlayTrack: (track: Track) => void;
+  currentTrack: Track | null;
+  isPlaying: boolean;
+  playerRef: any;
+  muted: boolean;
+  onProgress: (state: { played: number }) => void;
+  onDuration: (dur: number) => void;
+  onEnded: () => void;
 }
 
 const releases = [
   {
-    title: 'Space Monkey Remix',
-    label: 'Techburst',
-    embed: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/123456789&color=%23bf00ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
-    image: 'https://picsum.photos/seed/space/400/400',
+    title: 'Live DJ Set',
+    label: 'YouTube',
+    url: 'https://www.youtube.com/watch?v=63WeqRLtPkQ',
+    image: 'https://img.youtube.com/vi/63WeqRLtPkQ/maxresdefault.jpg',
   },
   {
-    title: 'Inferno',
-    label: 'Eclipse',
-    embed: 'https://open.spotify.com/embed/track/123456789?utm_source=generator&theme=0',
-    image: 'https://picsum.photos/seed/inferno/400/400',
+    title: 'Be Willing',
+    label: 'Tea Vuckovic Music',
+    url: 'https://soundcloud.com/teavuckovic-music/be-willing',
+    image: 'https://picsum.photos/seed/bewilling/400/400',
   },
   {
-    title: 'Tehnika EP',
-    label: 'DSR Digital',
-    embed: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/987654321&color=%23bf00ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
-    image: 'https://picsum.photos/seed/tehnika/400/400',
+    title: 'Space Monkey',
+    label: 'Mark Sherry',
+    url: 'https://soundcloud.com/marksherrydj/space-monkey-tea-vuckovic',
+    image: 'https://picsum.photos/seed/spacemonkey/400/400',
   },
 ];
 
-export default function Music({ lang }: MusicProps) {
+export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, playerRef, muted, onProgress, onDuration, onEnded }: MusicProps) {
   const t = translations[lang].music;
 
   return (
@@ -49,7 +62,10 @@ export default function Music({ lang }: MusicProps) {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {releases.map((release, index) => (
+          {releases.map((release, index) => {
+            const isActive = currentTrack?.url === release.url;
+            
+            return (
             <motion.div
               key={release.title}
               initial={{ opacity: 0, y: 50 }}
@@ -58,42 +74,81 @@ export default function Music({ lang }: MusicProps) {
               transition={{ duration: 0.8, delay: index * 0.2 }}
               className="group relative"
             >
-              <div className="aspect-square overflow-hidden rounded-2xl mb-6 relative">
-                <img
-                  src={release.image}
-                  alt={release.title}
-                  className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700 scale-100 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-darker/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                  <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full">
-                    {t.listen}
+              <div 
+                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative cursor-pointer ${isActive ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''}`}
+                onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
+              >
+                {isActive && release.url.includes('youtube') ? (
+                  <div className="absolute inset-0 z-0 pointer-events-none bg-black">
+                    <Player
+                      ref={playerRef}
+                      url={release.url}
+                      playing={isPlaying}
+                      muted={muted}
+                      onProgress={onProgress}
+                      onDuration={onDuration}
+                      onEnded={onEnded}
+                      width="100%"
+                      height="100%"
+                      config={{ youtube: { playerVars: { showinfo: 0, controls: 0, disablekb: 1, modestbranding: 1 } } }}
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src={release.image}
+                    alt={release.title}
+                    className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}
+                    referrerPolicy="no-referrer"
+                  />
+                )}
+                
+                {isActive && !release.url.includes('youtube') && (
+                  <div className="hidden">
+                    <Player
+                      ref={playerRef}
+                      url={release.url}
+                      playing={isPlaying}
+                      muted={muted}
+                      onProgress={onProgress}
+                      onDuration={onDuration}
+                      onEnded={onEnded}
+                      width="0"
+                      height="0"
+                    />
+                  </div>
+                )}
+
+                <div className={`absolute inset-0 bg-darker/60 transition-opacity duration-500 flex items-center justify-center z-10 ${isActive ? 'opacity-0 hover:opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                  <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full flex items-center gap-2 bg-darker/50 backdrop-blur-sm">
+                    {isActive && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />} 
+                    {isActive ? (isPlaying ? (lang === 'sl' ? 'Pavza' : 'Pause') : t.listen) : t.listen}
                   </span>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold uppercase tracking-wide mb-2">
+              <h3 className={`text-2xl font-bold uppercase tracking-wide mb-2 ${isActive ? 'text-neon' : ''}`}>
                 {release.title}
               </h3>
               <p className="text-neon font-medium uppercase tracking-widest text-sm mb-6">
                 {release.label}
               </p>
               
-              {/* Embeds */}
-              <div className="w-full h-32 bg-dark rounded-xl border border-white/10 flex items-center justify-center overflow-hidden">
-                <iframe
-                  width="100%"
-                  height="100%"
-                  scrolling="no"
-                  frameBorder="no"
-                  allow="autoplay"
-                  src={release.embed}
-                  className="w-full h-full"
-                ></iframe>
+              {/* Custom Play Button replacing the iframe to preserve layout */}
+              <div 
+                onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
+                className={`w-full h-32 rounded-xl border flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-colors group/btn ${isActive ? 'bg-neon/10 border-neon' : 'bg-dark border-white/10 hover:border-neon/50'}`}
+              >
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors mb-2 ${isActive ? 'bg-neon text-darker' : 'bg-neon/10 text-neon group-hover/btn:bg-neon group-hover/btn:text-darker'}`}>
+                  {isActive && isPlaying ? <Pause fill="currentColor" size={20} /> : <Play fill="currentColor" className="ml-1" size={20} />}
+                </div>
+                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive ? 'text-neon' : 'text-gray-400 group-hover/btn:text-white'}`}>
+                  {isActive ? (isPlaying ? (lang === 'sl' ? 'Predvajanje...' : 'Playing...') : (lang === 'sl' ? 'Pavzirano' : 'Paused')) : (lang === 'sl' ? 'Predvajaj' : 'Play Track')}
+                </span>
               </div>
             </motion.div>
-          ))}
+          )})}
         </div>
       </div>
     </section>
   );
 }
+
