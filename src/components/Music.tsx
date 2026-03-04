@@ -11,6 +11,7 @@ interface MusicProps {
   isPlaying: boolean;
   playerRef: any;
   muted: boolean;
+  volume: number;
   onProgress: (state: { played: number }) => void;
   onDuration: (dur: number) => void;
   onEnded: () => void;
@@ -37,7 +38,10 @@ const releases = [
   },
 ];
 
-export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, playerRef, muted, onProgress, onDuration, onEnded }: MusicProps) {
+export default function Music({ 
+  lang, onPlayTrack, currentTrack, isPlaying, 
+  playerRef, muted, volume, onProgress, onDuration, onEnded 
+}: MusicProps) {
   const t = translations[lang].music;
 
   return (
@@ -73,34 +77,26 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
               className="group relative"
             >
               <div 
-                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative ${isActive && !release.url.includes('youtube') ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''} ${!isActive ? 'cursor-pointer' : ''}`}
-                onClick={() => {
-                  if (!isActive) {
-                    onPlayTrack({ title: release.title, url: release.url, label: release.label });
-                  }
-                }}
+                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative ${isActive ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''} cursor-pointer`}
+                onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
               >
                 {isActive && release.url.includes('youtube') ? (
                   <div className="absolute inset-0 z-10 bg-black">
-                    <ReactPlayer
-                      ref={playerRef}
-                      url={release.url}
-                      playing={isPlaying}
-                      controls={true}
-                      muted={muted}
-                      onProgress={onProgress}
-                      onDuration={onDuration}
-                      onEnded={onEnded}
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${release.url.split('v=')[1].split('&')[0]}?rel=0&modestbranding=1`}
                       width="100%"
                       height="100%"
-                      config={{ youtube: { playerVars: { origin: window.location.origin } } }}
+                      title={release.title}
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
                     />
                   </div>
                 ) : (
                   <img
                     src={release.image}
                     alt={release.title}
-                    className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}
+                    className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'} ${isActive && release.url.includes('youtube') ? 'hidden' : ''}`}
                     referrerPolicy="no-referrer"
                   />
                 )}
@@ -112,6 +108,7 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
                       url={release.url}
                       playing={isPlaying}
                       muted={muted}
+                      volume={volume}
                       onProgress={onProgress}
                       onDuration={onDuration}
                       onEnded={onEnded}
@@ -130,7 +127,7 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
                   </div>
                 )}
               </div>
-              <h3 className={`text-2xl font-bold uppercase tracking-wide mb-2 ${isActive && !release.url.includes('youtube') ? 'text-neon' : ''}`}>
+              <h3 className={`text-2xl font-bold uppercase tracking-wide mb-2 ${isActive ? 'text-neon' : ''}`}>
                 {release.title}
               </h3>
               <p className="text-neon font-medium uppercase tracking-widest text-sm mb-6">
@@ -139,19 +136,13 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
               
               {/* Custom Play Button */}
               <div 
-                onClick={() => {
-                  if (!isActive || release.url.includes('youtube')) {
-                    onPlayTrack({ title: release.title, url: release.url, label: release.label });
-                  } else {
-                    onPlayTrack({ title: release.title, url: release.url, label: release.label }); // Toggle is handled in App.tsx
-                  }
-                }}
-                className={`w-full h-32 rounded-xl border flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-colors group/btn ${isActive && !release.url.includes('youtube') ? 'bg-neon/10 border-neon' : 'bg-dark border-white/10 hover:border-neon/50'}`}
+                onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
+                className={`w-full h-32 rounded-xl border flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-colors group/btn ${isActive ? 'bg-neon/10 border-neon' : 'bg-dark border-white/10 hover:border-neon/50'}`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors mb-2 ${isActive && !release.url.includes('youtube') ? 'bg-neon text-darker' : 'bg-neon/10 text-neon group-hover/btn:bg-neon group-hover/btn:text-darker'}`}>
-                  {isActive && isPlaying && !release.url.includes('youtube') ? <Pause fill="currentColor" size={20} /> : <Play fill="currentColor" className="ml-1" size={20} />}
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors mb-2 ${isActive ? 'bg-neon text-darker' : 'bg-neon/10 text-neon group-hover/btn:bg-neon group-hover/btn:text-darker'}`}>
+                  {isActive && isPlaying ? <Pause fill="currentColor" size={20} /> : <Play fill="currentColor" className="ml-1" size={20} />}
                 </div>
-                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive && !release.url.includes('youtube') ? 'text-neon' : 'text-gray-400 group-hover/btn:text-white'}`}>
+                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive ? 'text-neon' : 'text-gray-400 group-hover/btn:text-white'}`}>
                   {isActive ? (isPlaying ? (lang === 'sl' ? 'Predvajanje...' : 'Playing...') : (lang === 'sl' ? 'Pavzirano' : 'Paused')) : (lang === 'sl' ? 'Predvajaj' : 'Play Track')}
                 </span>
               </div>

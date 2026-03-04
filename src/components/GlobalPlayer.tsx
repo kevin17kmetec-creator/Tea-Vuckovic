@@ -18,6 +18,8 @@ interface GlobalPlayerProps {
   duration: number;
   muted: boolean;
   onMuteToggle: () => void;
+  volume: number;
+  onVolumeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSeekMouseDown: () => void;
   onSeekChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSeekMouseUp: (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => void;
@@ -26,6 +28,7 @@ interface GlobalPlayerProps {
 export default function GlobalPlayer({ 
   track, isVisible, onClose, playing, onTogglePlay,
   played, duration, muted, onMuteToggle,
+  volume, onVolumeChange,
   onSeekMouseDown, onSeekChange, onSeekMouseUp
 }: GlobalPlayerProps) {
 
@@ -93,12 +96,25 @@ export default function GlobalPlayer({
               {formatTime(played * duration)} / {formatTime(duration)}
             </div>
             <div className="w-px h-8 bg-white/10 hidden sm:block"></div>
-            <button 
-              onClick={onMuteToggle} 
-              className="text-gray-400 hover:text-white transition-colors hidden sm:block"
-            >
-              {muted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
+            <div className="flex items-center gap-2 group/volume relative">
+              <button 
+                onClick={onMuteToggle} 
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                {muted || volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+              <div className="w-0 group-hover/volume:w-20 overflow-hidden transition-all duration-300 flex items-center">
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step="any"
+                  value={muted ? 0 : volume}
+                  onChange={onVolumeChange}
+                  className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer accent-neon"
+                />
+              </div>
+            </div>
             <div className="w-px h-8 bg-white/10 hidden sm:block"></div>
             <button 
               onClick={onClose} 

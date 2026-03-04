@@ -16,6 +16,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import GlobalPlayer, { Track } from './components/GlobalPlayer';
 import BackToTop from './components/BackToTop';
+import ReactPlayer from 'react-player';
 import { Language, translations } from './translations';
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
   const [played, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(0.8);
   const [seeking, setSeeking] = useState(false);
   const playerRef = useRef<any>(null);
 
@@ -79,6 +81,7 @@ export default function App() {
         isPlaying={isPlaying} 
         playerRef={playerRef}
         muted={muted}
+        volume={volume}
         onProgress={handleProgress}
         onDuration={handleDuration}
         onEnded={() => setIsPlaying(false)}
@@ -90,7 +93,7 @@ export default function App() {
       <Marquee text={lang === 'sl' ? 'STOPITE V STIK' : 'GET IN TOUCH'} />
       <Contact lang={lang} />
       <Footer lang={lang} />
-      <BackToTop />
+      <BackToTop isPlayerVisible={isPlayerVisible} />
       <GlobalPlayer 
         track={currentTrack} 
         isVisible={isPlayerVisible} 
@@ -101,6 +104,8 @@ export default function App() {
         duration={duration}
         muted={muted}
         onMuteToggle={() => setMuted(!muted)}
+        volume={volume}
+        onVolumeChange={(e) => setVolume(parseFloat(e.target.value))}
         onSeekMouseDown={handleSeekMouseDown}
         onSeekChange={handleSeekChange}
         onSeekMouseUp={handleSeekMouseUp}
