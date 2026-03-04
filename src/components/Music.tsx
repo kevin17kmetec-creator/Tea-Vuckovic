@@ -22,21 +22,18 @@ const releases = [
     label: 'YouTube',
     url: 'https://www.youtube.com/watch?v=63WeqRLtPkQ',
     image: 'https://img.youtube.com/vi/63WeqRLtPkQ/maxresdefault.jpg',
-    isExternal: true,
   },
   {
     title: 'Be Willing',
     label: 'Tea Vuckovic Music',
     url: 'https://soundcloud.com/teavuckovic-music/be-willing',
     image: 'https://i1.sndcdn.com/artworks-itQgngSuvgui-0-t500x500.jpg',
-    isExternal: false,
   },
   {
     title: 'Space Monkey',
     label: 'Mark Sherry',
     url: 'https://soundcloud.com/marksherrydj/space-monkey-tea-vuckovic',
     image: 'https://i1.sndcdn.com/artworks-oKzbUL2mDogv-0-t500x500.jpg',
-    isExternal: false,
   },
 ];
 
@@ -76,23 +73,39 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
               className="group relative"
             >
               <div 
-                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative cursor-pointer ${isActive && !release.isExternal ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''}`}
+                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative ${isActive && !release.url.includes('youtube') ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''} ${!isActive ? 'cursor-pointer' : ''}`}
                 onClick={() => {
-                  if (release.isExternal) {
-                    window.open(release.url, '_blank', 'noopener,noreferrer');
-                  } else {
+                  if (!isActive) {
                     onPlayTrack({ title: release.title, url: release.url, label: release.label });
                   }
                 }}
               >
-                <img
-                  src={release.image}
-                  alt={release.title}
-                  className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive && !release.isExternal ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}
-                  referrerPolicy="no-referrer"
-                />
+                {isActive && release.url.includes('youtube') ? (
+                  <div className="absolute inset-0 z-10 bg-black">
+                    <ReactPlayer
+                      ref={playerRef}
+                      url={release.url}
+                      playing={isPlaying}
+                      controls={true}
+                      muted={muted}
+                      onProgress={onProgress}
+                      onDuration={onDuration}
+                      onEnded={onEnded}
+                      width="100%"
+                      height="100%"
+                      config={{ youtube: { playerVars: { origin: window.location.origin } } }}
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src={release.image}
+                    alt={release.title}
+                    className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}
+                    referrerPolicy="no-referrer"
+                  />
+                )}
                 
-                {isActive && !release.isExternal && (
+                {isActive && !release.url.includes('youtube') && (
                   <div className="hidden">
                     <ReactPlayer
                       ref={playerRef}
@@ -108,23 +121,16 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
                   </div>
                 )}
 
-                <div className={`absolute inset-0 bg-darker/60 transition-opacity duration-500 flex items-center justify-center z-10 ${isActive && !release.isExternal ? 'opacity-0 hover:opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                  <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full flex items-center gap-2 bg-darker/50 backdrop-blur-sm">
-                    {release.isExternal ? (
-                      <>
-                        <Play size={16} fill="currentColor" />
-                        {lang === 'sl' ? 'Glej na YouTube' : 'Watch on YouTube'}
-                      </>
-                    ) : (
-                      <>
-                        {isActive && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />} 
-                        {isActive ? (isPlaying ? (lang === 'sl' ? 'Pavza' : 'Pause') : t.listen) : t.listen}
-                      </>
-                    )}
-                  </span>
-                </div>
+                {(!isActive || !release.url.includes('youtube')) && (
+                  <div className={`absolute inset-0 bg-darker/60 transition-opacity duration-500 flex items-center justify-center z-10 ${isActive ? 'opacity-0 hover:opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                    <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full flex items-center gap-2 bg-darker/50 backdrop-blur-sm">
+                      {isActive && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />} 
+                      {isActive ? (isPlaying ? (lang === 'sl' ? 'Pavza' : 'Pause') : t.listen) : t.listen}
+                    </span>
+                  </div>
+                )}
               </div>
-              <h3 className={`text-2xl font-bold uppercase tracking-wide mb-2 ${isActive && !release.isExternal ? 'text-neon' : ''}`}>
+              <h3 className={`text-2xl font-bold uppercase tracking-wide mb-2 ${isActive && !release.url.includes('youtube') ? 'text-neon' : ''}`}>
                 {release.title}
               </h3>
               <p className="text-neon font-medium uppercase tracking-widest text-sm mb-6">
@@ -134,22 +140,19 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
               {/* Custom Play Button */}
               <div 
                 onClick={() => {
-                  if (release.isExternal) {
-                    window.open(release.url, '_blank', 'noopener,noreferrer');
-                  } else {
+                  if (!isActive || release.url.includes('youtube')) {
                     onPlayTrack({ title: release.title, url: release.url, label: release.label });
+                  } else {
+                    onPlayTrack({ title: release.title, url: release.url, label: release.label }); // Toggle is handled in App.tsx
                   }
                 }}
-                className={`w-full h-32 rounded-xl border flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-colors group/btn ${isActive && !release.isExternal ? 'bg-neon/10 border-neon' : 'bg-dark border-white/10 hover:border-neon/50'}`}
+                className={`w-full h-32 rounded-xl border flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-colors group/btn ${isActive && !release.url.includes('youtube') ? 'bg-neon/10 border-neon' : 'bg-dark border-white/10 hover:border-neon/50'}`}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors mb-2 ${isActive && !release.isExternal ? 'bg-neon text-darker' : 'bg-neon/10 text-neon group-hover/btn:bg-neon group-hover/btn:text-darker'}`}>
-                  {isActive && isPlaying && !release.isExternal ? <Pause fill="currentColor" size={20} /> : <Play fill="currentColor" className="ml-1" size={20} />}
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors mb-2 ${isActive && !release.url.includes('youtube') ? 'bg-neon text-darker' : 'bg-neon/10 text-neon group-hover/btn:bg-neon group-hover/btn:text-darker'}`}>
+                  {isActive && isPlaying && !release.url.includes('youtube') ? <Pause fill="currentColor" size={20} /> : <Play fill="currentColor" className="ml-1" size={20} />}
                 </div>
-                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive && !release.isExternal ? 'text-neon' : 'text-gray-400 group-hover/btn:text-white'}`}>
-                  {release.isExternal 
-                    ? (lang === 'sl' ? 'Odpri YouTube' : 'Open YouTube')
-                    : (isActive ? (isPlaying ? (lang === 'sl' ? 'Predvajanje...' : 'Playing...') : (lang === 'sl' ? 'Pavzirano' : 'Paused')) : (lang === 'sl' ? 'Predvajaj' : 'Play Track'))
-                  }
+                <span className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive && !release.url.includes('youtube') ? 'text-neon' : 'text-gray-400 group-hover/btn:text-white'}`}>
+                  {isActive ? (isPlaying ? (lang === 'sl' ? 'Predvajanje...' : 'Playing...') : (lang === 'sl' ? 'Pavzirano' : 'Paused')) : (lang === 'sl' ? 'Predvajaj' : 'Play Track')}
                 </span>
               </div>
             </motion.div>
