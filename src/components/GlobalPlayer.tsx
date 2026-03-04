@@ -1,3 +1,4 @@
+import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, X, Volume2, VolumeX } from 'lucide-react';
 
