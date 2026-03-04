@@ -15,6 +15,7 @@ import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import GlobalPlayer, { Track } from './components/GlobalPlayer';
+import BackToTop from './components/BackToTop';
 import { Language, translations } from './translations';
 
 export default function App() {
@@ -89,6 +90,7 @@ export default function App() {
       <Marquee text={lang === 'sl' ? 'STOPITE V STIK' : 'GET IN TOUCH'} />
       <Contact lang={lang} />
       <Footer lang={lang} />
+      <BackToTop />
       <GlobalPlayer 
         track={currentTrack} 
         isVisible={isPlayerVisible} 
