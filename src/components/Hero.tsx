@@ -31,7 +31,7 @@ export default function Hero({ lang }: HeroProps) {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-none"
+          className="text-[11vw] sm:text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter leading-none break-words"
         >
           Tea <span className="text-neon block md:inline">Vučkovič</span>
         </motion.h1>
@@ -39,7 +39,7 @@ export default function Hero({ lang }: HeroProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.8 }}
-          className="mt-6 text-lg md:text-2xl font-medium tracking-widest uppercase text-gray-400"
+          className="mt-6 text-sm sm:text-lg md:text-2xl font-medium tracking-widest uppercase text-gray-400 px-4"
         >
           {t.subtitle}
         </motion.p>

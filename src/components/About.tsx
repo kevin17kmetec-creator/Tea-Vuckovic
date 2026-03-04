@@ -36,7 +36,7 @@ export default function About({ lang }: AboutProps) {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline break-words">
             {t.title}
           </h2>
           <div className="w-20 h-1 bg-neon" />

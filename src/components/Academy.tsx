@@ -37,7 +37,7 @@ export default function Academy({ lang }: AcademyProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6 break-words">
             {t.title}
           </h2>
           <div className="w-20 h-1 bg-neon mx-auto mb-8" />

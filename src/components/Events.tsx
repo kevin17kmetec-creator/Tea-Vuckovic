@@ -46,7 +46,7 @@ export default function Events({ lang }: EventsProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6 break-words">
             {t.title}
           </h2>
           <div className="w-20 h-1 bg-neon mx-auto mb-8" />
@@ -66,9 +66,9 @@ export default function Events({ lang }: EventsProps) {
               className="group flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-darker border border-white/5 hover:border-neon/50 rounded-2xl transition-all duration-300 hover:bg-white/5"
             >
               <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 w-full md:w-auto mb-6 md:mb-0">
-                <div className="flex items-center gap-4 text-neon font-black text-2xl uppercase tracking-tighter w-32">
-                  <Calendar size={24} className="text-white/50" />
-                  {event.date}
+                <div className="flex items-center gap-4 text-neon font-black text-2xl uppercase tracking-tighter w-auto md:w-40">
+                  <Calendar size={24} className="text-white/50 shrink-0" />
+                  <span className="break-words">{event.date}</span>
                 </div>
                 <div className="flex flex-col">
                   <h3 className="text-xl font-bold uppercase tracking-wide mb-1">

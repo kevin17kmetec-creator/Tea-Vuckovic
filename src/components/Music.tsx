@@ -20,7 +20,7 @@ const releases = [
   {
     title: 'Live DJ Set',
     label: 'YouTube',
-    url: 'https://www.youtube.com/watch?v=63WeqRLtPkQ',
+    url: 'https://www.youtube-nocookie.com/watch?v=63WeqRLtPkQ',
     image: 'https://img.youtube.com/vi/63WeqRLtPkQ/maxresdefault.jpg',
   },
   {
@@ -50,7 +50,7 @@ export default function Music({ lang, onPlayTrack, currentTrack, isPlaying, play
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6 break-words">
             {t.title}
           </h2>
           <div className="w-20 h-1 bg-neon mx-auto mb-8" />

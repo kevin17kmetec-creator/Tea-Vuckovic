@@ -33,11 +33,11 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-darker/90 backdrop-blur-md py-4' : 'bg-transparent py-6'
+        isOpen ? 'bg-darker py-4' : scrolled ? 'bg-darker/90 backdrop-blur-md py-4' : 'bg-transparent py-6'
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <a href="#" className="text-2xl font-bold tracking-tighter uppercase">
+        <a href="#" className="text-lg sm:text-2xl font-bold tracking-tighter uppercase whitespace-nowrap">
           Tea <span className="text-neon">Vučkovič</span>
         </a>
 
@@ -73,21 +73,6 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
 
         {/* Mobile Menu Toggle */}
         <div className="flex items-center gap-4 md:hidden">
-          <div className="flex items-center gap-3 mr-2">
-            <button 
-              onClick={() => setLang('sl')}
-              className={`text-xs font-black uppercase transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-400'}`}
-            >
-              SLO
-            </button>
-            <span className="text-gray-700 text-xs">/</span>
-            <button 
-              onClick={() => setLang('en')}
-              className={`text-xs font-black uppercase transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-400'}`}
-            >
-              ENG
-            </button>
-          </div>
           <button
             className="text-white hover:text-neon transition-colors"
             onClick={() => setIsOpen(!isOpen)}
@@ -104,19 +89,36 @@ export default function Navbar({ lang, setLang }: NavbarProps) {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full bg-darker/95 backdrop-blur-lg border-b border-white/10 md:hidden"
+            className="absolute top-full left-0 w-full h-screen bg-darker md:hidden"
           >
-            <div className="flex flex-col items-center py-8 space-y-6">
+            <div className="flex flex-col items-center pt-12 pb-32 space-y-6">
               {links.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="text-xl uppercase tracking-widest font-bold hover:text-neon transition-colors"
+                  className="text-base uppercase tracking-widest font-bold hover:text-neon transition-colors"
                 >
                   {link.name}
                 </a>
               ))}
+              
+              {/* Mobile Language Switcher */}
+              <div className="flex items-center gap-4 pt-6 mt-2 border-t border-white/10 w-1/2 justify-center">
+                <button 
+                  onClick={() => { setLang('sl'); setIsOpen(false); }}
+                  className={`text-sm font-black uppercase tracking-widest transition-colors ${lang === 'sl' ? 'text-neon' : 'text-gray-400 hover:text-white'}`}
+                >
+                  SLO
+                </button>
+                <span className="text-gray-700 text-sm">/</span>
+                <button 
+                  onClick={() => { setLang('en'); setIsOpen(false); }}
+                  className={`text-sm font-black uppercase tracking-widest transition-colors ${lang === 'en' ? 'text-neon' : 'text-gray-400 hover:text-white'}`}
+                >
+                  ENG
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

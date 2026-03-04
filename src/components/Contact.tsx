@@ -19,7 +19,7 @@ export default function Contact({ lang }: ContactProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-black uppercase tracking-tighter text-outline mb-6 break-words">
             {t.title}
           </h2>
           <div className="w-20 h-1 bg-neon mx-auto mb-8" />
@@ -37,18 +37,18 @@ export default function Contact({ lang }: ContactProps) {
             transition={{ duration: 0.8 }}
             className="space-y-12"
           >
-            <div className="bg-darker p-10 rounded-2xl border border-white/5 hover:border-neon/50 transition-colors">
-              <div className="flex items-center gap-6 mb-4">
-                <div className="w-16 h-16 rounded-full bg-neon/10 flex items-center justify-center text-neon">
-                  <Mail size={24} />
+            <div className="bg-darker p-6 lg:p-10 rounded-2xl border border-white/5 hover:border-neon/50 transition-colors">
+              <div className="flex items-center gap-4 lg:gap-6 mb-2 lg:mb-4">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 shrink-0 rounded-full bg-neon/10 flex items-center justify-center text-neon">
+                  <Mail className="w-5 h-5 lg:w-6 lg:h-6" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold uppercase tracking-wide mb-1">
+                <div className="min-w-0">
+                  <h3 className="text-lg lg:text-xl font-bold uppercase tracking-wide mb-1 truncate">
                     {t.bookings}
                   </h3>
                   <a
                     href="mailto:bookings@teavuckovic.com"
-                    className="text-gray-400 hover:text-neon transition-colors"
+                    className="text-sm lg:text-base text-gray-400 hover:text-neon transition-colors break-all"
                   >
                     bookings@teavuckovic.com
                   </a>
@@ -56,18 +56,18 @@ export default function Contact({ lang }: ContactProps) {
               </div>
             </div>
 
-            <div className="bg-darker p-10 rounded-2xl border border-white/5 hover:border-neon/50 transition-colors">
-              <div className="flex items-center gap-6 mb-4">
-                <div className="w-16 h-16 rounded-full bg-neon/10 flex items-center justify-center text-neon">
-                  <Mail size={24} />
+            <div className="bg-darker p-6 lg:p-10 rounded-2xl border border-white/5 hover:border-neon/50 transition-colors">
+              <div className="flex items-center gap-4 lg:gap-6 mb-2 lg:mb-4">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 shrink-0 rounded-full bg-neon/10 flex items-center justify-center text-neon">
+                  <Mail className="w-5 h-5 lg:w-6 lg:h-6" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold uppercase tracking-wide mb-1">
+                <div className="min-w-0">
+                  <h3 className="text-lg lg:text-xl font-bold uppercase tracking-wide mb-1 truncate">
                     {t.academy}
                   </h3>
                   <a
                     href="mailto:info@teavuckovic.com"
-                    className="text-gray-400 hover:text-neon transition-colors"
+                    className="text-sm lg:text-base text-gray-400 hover:text-neon transition-colors break-all"
                   >
                     info@teavuckovic.com
                   </a>
@@ -135,9 +135,12 @@ export default function Contact({ lang }: ContactProps) {
               </div>
               <button
                 type="submit"
-                className="w-full bg-neon text-darker font-black uppercase tracking-widest py-4 rounded-lg hover:bg-white transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-neon text-darker font-black uppercase tracking-widest py-4 md:py-3 text-sm rounded-lg hover:bg-white transition-colors flex items-center justify-center px-6"
               >
-                <Send size={18} /> {t.form.send}
+                <div className="flex items-center gap-3">
+                  <Send size={16} className="shrink-0" />
+                  <span>{t.form.send}</span>
+                </div>
               </button>
             </form>
           </motion.div>
