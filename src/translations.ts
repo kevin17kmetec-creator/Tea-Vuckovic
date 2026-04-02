@@ -86,7 +86,7 @@ export const translations = {
       contact: 'Contact',
     },
     hero: {
-      subtitle: 'Power / Energy / Tehnika',
+      subtitle: 'Power / Energy / Technique',
       hideVideo: 'Hide Background',
       showVideo: 'Show Background',
     },
