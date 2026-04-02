@@ -20,7 +20,7 @@ export default function About({ lang }: AboutProps) {
           className="relative aspect-[3/4] rounded-2xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700"
         >
           <img
-            src="https://scontent-fra3-1.xx.fbcdn.net/v/t39.30808-6/467514825_1129069125888385_1507072227617104279_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=108&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=d7wUrYOoKAcQ7kNvwHRrHgZ&_nc_oc=AdmQ-YQ9-l3vBUk3J8MlHG_ujXdToR-JFZ5tgC93oYVzZTJZlPGqh_lMcKmnwBfo775aguhoKt5XAysmxna1eeQ9&_nc_zt=23&_nc_ht=scontent-fra3-1.xx&_nc_gid=HOpbwgCzSASS5zjRhTNweQ&_nc_ss=8&oh=00_Afx7j1M9OHA_3tJ20yCQOPFb-ogIe5FrUFdXrANio0KOBQ&oe=69AC8529"
+            src="https://lh3.googleusercontent.com/d/17FfdpUBnbmfHnj1aELQhgIHVqBfaifRF"
             alt="Tea Vučkovič"
             className="object-cover w-full h-full"
             referrerPolicy="no-referrer"

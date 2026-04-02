@@ -6,12 +6,11 @@ interface GalleryProps {
 }
 
 const images = [
-  'https://picsum.photos/seed/dj1/600/800',
-  'https://picsum.photos/seed/dj2/800/600',
-  'https://picsum.photos/seed/dj3/600/600',
-  'https://picsum.photos/seed/dj4/800/800',
-  'https://picsum.photos/seed/dj5/600/800',
-  'https://picsum.photos/seed/dj6/800/600',
+  'https://lh3.googleusercontent.com/d/1s0IhuXQfLhr79t4ggjS8ij8dPvR_spV-',
+  'https://lh3.googleusercontent.com/d/1uGW9aBMjt_7TPK-tJBWYVt4t4Avo19pd',
+  'https://lh3.googleusercontent.com/d/1_FsZJ54f3OZcsfxabXqbgoseu3kVXLKU',
+  'https://lh3.googleusercontent.com/d/1Zu5xxnGmB8yooZ2TlFHTMbMjnVJzwMFS',
+  'https://lh3.googleusercontent.com/d/1RDAse5OTNl6znNb-3c1SwoELLBZjius7',
 ];
 
 export default function Gallery({ lang }: GalleryProps) {

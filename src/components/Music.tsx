@@ -1,8 +1,16 @@
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Play, Pause } from 'lucide-react';
 import ReactPlayer from 'react-player';
 import { Language, translations } from '../translations';
 import { Track } from './GlobalPlayer';
+
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: () => void;
+    YT: any;
+  }
+}
 
 interface MusicProps {
   lang: Language;
@@ -37,6 +45,53 @@ const releases = [
     image: 'https://i1.sndcdn.com/artworks-oKzbUL2mDogv-0-t500x500.jpg',
   },
 ];
+
+function YouTubeFacade({ url, title, image }: { url: string; title: string; image: string }) {
+  const [showVideo, setShowVideo] = useState(false);
+  const videoId = url.split('v=')[1]?.split('&')[0];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handlePlayClick = () => {
+    setShowVideo(true);
+    
+    // Dynamically inject API script only after click
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+    window.onYouTubeIframeAPIReady = () => {
+      new (window as any).YT.Player(containerRef.current, {
+        height: '100%',
+        width: '100%',
+        videoId: videoId,
+        playerVars: {
+          'autoplay': 1,
+          'playsinline': 1,
+          'origin': window.location.origin,
+          'rel': 0,
+          'modestbranding': 1,
+          'enablejsapi': 1
+        }
+      });
+    };
+  };
+
+  if (showVideo) {
+    return <div ref={containerRef} className="absolute inset-0 z-10 bg-black" />;
+  }
+
+  return (
+    <div className="absolute inset-0 z-10 cursor-pointer group" onClick={handlePlayClick}>
+      <img src={image} alt={title} className="object-cover w-full h-full" referrerPolicy="no-referrer" />
+      <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+        <div className="w-16 h-16 bg-neon rounded-full flex items-center justify-center text-darker group-hover:scale-110 transition-transform">
+          <Play fill="currentColor" size={24} className="ml-1" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Music({ 
   lang, onPlayTrack, currentTrack, isPlaying, 
@@ -77,28 +132,29 @@ export default function Music({
               className="group relative"
             >
               <div 
-                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative ${isActive ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''} cursor-pointer`}
-                onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
+                className={`aspect-square overflow-hidden rounded-2xl mb-6 relative ${isActive ? 'ring-2 ring-neon ring-offset-4 ring-offset-darker' : ''}`}
               >
-                {isActive && release.url.includes('youtube') ? (
-                  <div className="absolute inset-0 z-10 bg-black">
-                    <iframe
-                      src={`https://www.youtube-nocookie.com/embed/${release.url.split('v=')[1].split('&')[0]}?rel=0&modestbranding=1`}
-                      width="100%"
-                      height="100%"
-                      title={release.title}
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  </div>
+                {release.url.includes('youtube') ? (
+                  <YouTubeFacade url={release.url} title={release.title} image={release.image} />
                 ) : (
-                  <img
-                    src={release.image}
-                    alt={release.title}
-                    className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'} ${isActive && release.url.includes('youtube') ? 'hidden' : ''}`}
-                    referrerPolicy="no-referrer"
-                  />
+                  <div 
+                    className="cursor-pointer h-full"
+                    onClick={() => onPlayTrack({ title: release.title, url: release.url, label: release.label })}
+                  >
+                    <img
+                      src={release.image}
+                      alt={release.title}
+                      className={`object-cover w-full h-full transition-all duration-700 scale-100 group-hover:scale-105 ${isActive ? 'grayscale-0' : 'grayscale group-hover:grayscale-0'}`}
+                      referrerPolicy="no-referrer"
+                    />
+                    
+                    <div className={`absolute inset-0 bg-darker/60 transition-opacity duration-500 flex items-center justify-center z-10 ${isActive ? 'opacity-0 hover:opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                      <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full flex items-center gap-2 bg-darker/50 backdrop-blur-sm">
+                        {isActive && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />} 
+                        {isActive ? (isPlaying ? (lang === 'sl' ? 'Pavza' : 'Pause') : t.listen) : t.listen}
+                      </span>
+                    </div>
+                  </div>
                 )}
                 
                 {isActive && !release.url.includes('youtube') && (
@@ -115,15 +171,6 @@ export default function Music({
                       width="0"
                       height="0"
                     />
-                  </div>
-                )}
-
-                {(!isActive || !release.url.includes('youtube')) && (
-                  <div className={`absolute inset-0 bg-darker/60 transition-opacity duration-500 flex items-center justify-center z-10 ${isActive ? 'opacity-0 hover:opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                    <span className="text-neon font-bold uppercase tracking-widest text-sm border border-neon px-6 py-3 rounded-full flex items-center gap-2 bg-darker/50 backdrop-blur-sm">
-                      {isActive && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />} 
-                      {isActive ? (isPlaying ? (lang === 'sl' ? 'Pavza' : 'Pause') : t.listen) : t.listen}
-                    </span>
                   </div>
                 )}
               </div>
